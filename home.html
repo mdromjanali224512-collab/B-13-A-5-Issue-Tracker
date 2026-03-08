@@ -17,7 +17,7 @@
 </style>
 </head>
 <body class="geist bg-[#F8FAFC]">
-    <div class="flex justify-between items-center bg-white px-10 py-5 shadow">
+    <div class="md:flex-row gap-5 flex flex-col justify-center md:justify-between items-center bg-white px-10 py-5 shadow">
         <div class="flex items-center gap-2">
             <img class="h-11 w-11" src="./assets/github-logo.png" alt="">
             <h1 class="text-[#1F2937] font-semibold text-2xl">GitHub Issues Tracker</h1>
@@ -27,11 +27,11 @@
   <div>
     <label class="input validator join-item">
      
-      <input type="text" placeholder="Search issues"/>
+      <input id="input" type="text" placeholder="Search issues"/>
     </label>
   
   </div>
-  <button class="btn btn-primary join-item text-white font-semibold text-[16px]">+ New Issue</button>
+  <button onclick="findIssue()" class="btn btn-primary join-item text-white font-semibold text-[16px]">+ New Issue</button>
 </div>
         </div>
     </div>
@@ -40,9 +40,9 @@
         <!-- navBar -->
         <nav class="bg-white p-5 shadow rounded-md">
        <div class="flex items-center gap-2">
-         <button onclick="loadAllIssues('all')" class="btn issueBtn active">All</button>
-        <button onclick="loadAllIssues('open')" class="btn issueBtn">Open</button>
-        <button onclick="loadAllIssues('closed')" class="btn issueBtn">Closed</button>
+         <button id="all" onclick="loadAllIssues('all')" class="btn issueBtn active">All</button>
+        <button id="open" onclick="loadAllIssues('open')" class="btn issueBtn">Open</button>
+        <button id="closed" onclick="loadAllIssues('closed')" class="btn issueBtn">Closed</button>
        </div>
     </nav>
     <div class="flex justify-between items-center border-b-2 border-gray-300 rounded-md bg-white mt-5 p-5">
@@ -89,6 +89,7 @@
 
 <script>
 const loadAllIssues=async (status='all')=>{
+    activeBTN(status)
     const res=await fetch('https://phi-lab-server.vercel.app/api/v1/lab/issues');
     const data=await res.json()
     let issues=data.data
@@ -188,10 +189,22 @@ issue.labels.map(lebel=>`
     detailsContainer.append(card)
 }
 
-const activeBTN=()=>{
-    
+const activeBTN=(status)=>{
+const getBtn=document.querySelectorAll('.issueBtn')
+getBtn.forEach(btn=>btn?.classList.remove('active'));
+document.getElementById(status)?.classList.add('active')
 }
 
+const findIssue= async()=>{
+const input=document.getElementById('input').value.toLowerCase()
+
+const res=await fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${input}`)
+const datas=await res.json();
+const alldata=datas.data
+const peram=alldata?.filter(data=>data.description.toLowerCase().includes(input))
+
+displayIssues(peram)
+}
 loadAllIssues()
 </script>
 </body>
