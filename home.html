@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>home</title>
+       <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+    .geist {
+  font-family: "Geist", sans-serif;
+}
+.active{
+    color: white;
+    background: blue;
+}
+</style>
+</head>
+<body class="geist bg-[#F8FAFC]">
+    <div class="flex justify-between items-center bg-white px-10 py-5 shadow">
+        <div class="flex items-center gap-2">
+            <img class="h-11 w-11" src="./assets/github-logo.png" alt="">
+            <h1 class="text-[#1F2937] font-semibold text-2xl">GitHub Issues Tracker</h1>
+        </div>
+        <div>
+           <div class="join">
+  <div>
+    <label class="input validator join-item">
+     
+      <input type="text" placeholder="Search issues"/>
+    </label>
+  
+  </div>
+  <button class="btn btn-primary join-item text-white font-semibold text-[16px]">+ New Issue</button>
+</div>
+        </div>
+    </div>
+   
+    <main class=" max-w-[90%] mx-auto mt-18">
+        <!-- navBar -->
+        <nav class="bg-white p-5 shadow rounded-md">
+       <div class="flex items-center gap-2">
+         <button onclick="loadAllIssues('all')" class="btn issueBtn active">All</button>
+        <button onclick="loadAllIssues('open')" class="btn issueBtn">Open</button>
+        <button onclick="loadAllIssues('closed')" class="btn issueBtn">Closed</button>
+       </div>
+    </nav>
+    <div class="flex justify-between items-center border-b-2 border-gray-300 rounded-md bg-white mt-5 p-5">
+        <div class="flex items-center gap-3">
+            <img src="./assets/Aperture.png" alt="">
+        <div>
+            <h1 class="text-[#1F2937] font-semibold text-[20px]" id="countIssues">50 <span>Issues</span></h1>
+            <p class="text-[#64748B] text-[16px]">Track and manage your project issues</p>
+        </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <h1 class="flex items-center gap-2">
+                <img src="./assets/Ellipse 2 (1).png" alt="">
+              
+                Open</h1>
+            <h1 class="flex items-center gap-2">
+                  <img src="./assets/Ellipse 2.png" alt="">
+                Closed</h1>
+        </div>
+    </div>
+    <div class="bg-white p-5">
+<div id="issuesContainer" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    
+    
+
+</div>
+    </div>
+    </main>
+    
+    <!-- You can open the modal using ID.showModal() method -->
+
+<dialog id="my_modal_3" class="modal">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <div class="" id="detailsContainer">
+
+    </div>
+  </div>
+</dialog>
+
+
+
+<script>
+const loadAllIssues=async (status='all')=>{
+    const res=await fetch('https://phi-lab-server.vercel.app/api/v1/lab/issues');
+    const data=await res.json()
+    let issues=data.data
+    
+if(status!='all'){
+    issues=issues.filter(issue=>issue.status===status)
+}
+
+        displayIssues(issues)
+    
+}
+
+const displayIssues=(issues)=>{
+    const countIssues=document.getElementById('countIssues').innerText=issues.length;
+
+    const issuesContainer=document.getElementById("issuesContainer");
+issuesContainer.innerHTML=""
+issues.map(issue=>{
+  
+    const card=document.createElement("div")
+    card.innerHTML=`
+    <div onclick="my_modal_3.showModal();shoDetails(${issue.id})" class="bg-white p-5 rounded-md shadow-xl ${issue.status==='open' ? 'border-t-6 border-green-700': 'border-t-6 border-[#A855F7]'}">
+     
+<div class="flex justify-between items-center">
+${issue.status==='open' ?
+ '<img src="./assets/Open-Status.png" alt="">' :
+ '<img src="./assets/Status.png" alt="">'}
+<h1 class="rounded-full bg-red-100 text-red-500 px-5 py-2 w-25 text-center">${issue.priority}</h1>
+</div>
+<h1 class="font-semibold mt-3 text-[#1F2937] text-[14px]">${issue.title}</h1>
+<p class="text-[12px] text-[#64748B] mt-3 line-clamp-2" title="${issue.description}">${issue.description}</p>
+ <div class="flex items-center  border-b-2 border-gray-300 mt-3 pb-3">
+${
+issue.labels.map(lebel=>`
+   
+   <h1 class="${lebel==='enhancement' ? 'bg-green-200 rounded-full text-green-600 px-4 py-1' : 
+   'bg-blue-300 rounded-full text-blue-600 px-4 py-1'}">${lebel}</h1>
+
+`
+)
+}
+</div>
+      <p class="text-[12px] mt-5 mb-2 text-[#64748B]">#1
+by ${issue.author}</p>
+      <p class="text-[12px] text-[#64748B]">${issue.createdAt}</p>
+    </div>
+    `;
+    issuesContainer.append(card)
+})
+}
+const shoDetails=(id)=>{
+fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`)
+.then(res=>res.json()).then(data=>{
+    displayDetails(data.data);
+    
+})
+}
+const displayDetails=(issue)=>{
+const detailsContainer=document.getElementById("detailsContainer")
+detailsContainer.innerHTML=""
+
+    
+    const card=document.createElement('div')
+    card.innerHTML=`
+    <div class="bg-white p-5 rounded-md shadow-xl ${issue.status==='open' ? 'border-t-6 border-green-700': 'border-t-6 border-[#A855F7]'}">
+     <h1 class="font-semibold mt-3 text-[#1F2937] text-[14px]">${issue.title}</h1>
+<div class="flex gap-2 items-center">
+    <h1 class="rounded-full bg-red-100 text-red-500 px-3 py-1 text-center">${issue.status}</h1>*
+    <p class="text-[12px] text-[#64748B]">${issue.status}
+by ${issue.author}</p>*
+ <p class="text-[12px] text-[#64748B]">${issue.createdAt}</p>
+</div>
+<div class="flex items-center  border-b-2 border-gray-300 mt-3 pb-3">
+${
+issue.labels.map(lebel=>`
+   
+   <h1 class="${lebel==='enhancement' ? 'bg-green-200 rounded-full text-green-600 px-4 py-1' : 
+   'bg-blue-300 rounded-full text-blue-600 px-4 py-1'}">${lebel}</h1>`)
+}
+</div>
+<p class="text-[12px] text-[#64748B] mt-3">${issue.description}</p>
+ <div class="bg-gray-200 p-5 flex justify-between items-center rounded-xl mt-5">
+    <div>
+        <h1 class="text-[#64748B] text-[16px]">Assignee:</h1>
+        <h1>${issue.assignee}</h1>
+    </div>
+    <div>
+        <h1 class="text-[#64748B] text-[16px]">Priority:</h1>
+        <h1>${issue.priority}</h1>
+    </div>
+    <div></div>
+</div>
+      
+     </div>
+    </div>
+    `;
+    detailsContainer.append(card)
+}
+
+const activeBTN=()=>{
+    
+}
+
+loadAllIssues()
+</script>
+</body>
+</html>

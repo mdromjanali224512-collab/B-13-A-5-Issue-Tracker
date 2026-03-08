@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B-13 | A5</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+    .geist {
+  font-family: "Geist", sans-serif;
+}
+</style>
+</head>
+<body class="geist">
+    <main class="max-w-xl mx-auto pt-20">
+    
+        <!-- input -->
+         <div class=" bg-base-200 ">
+  <div class="hero-content flex-col">
+       <div class="text-center ">
+            <img class="mx-auto mb-8" src="./assets/github-logo.png" alt="">
+            <h1 class="text-[#1F2937] font-semibold text-2xl">GitHub Issues Tracker</h1>
+            <p class="text-[#64748B] ">Sign in to manage your issues</p>
+        </div>
+    <div class="bg-base-100 w-full max-w-md shrink-0 shadow-2xl">
+      <div class="card-body">
+        <fieldset class="fieldset">
+          <label class="font-medium text-xl">Username</label>
+          <input id="username" type="text" class="input w-full" placeholder="Enter Username" />
+          <label class="font-medium text-xl mt-5">Password</label>
+          <input id="password" type="password" class="input w-full" placeholder="Enter Password" />
+          
+          <button onclick="loginBtn()" class="btn btn-primary mt-4">Sign In</button>
+          <div class="divider text-[16px]">or</div>
+          <h1 class="text-center text-[14px]">Demo Credentials:</h1>
+          <div class="text-center bg-gray-300 p-5">
+            <p class="text-xl"><span class="text-xl font-bold">Username:</span> admin</p>
+            <p class="text-xl"><span class="text-xl font-bold">Password:</span> admin123</p>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>
+    </main>
+<button onclick="loadIssues('all')">All</button>
+<button onclick="loadIssues('open')">Open</button>
+<button onclick="loadIssues('closed')">Closed</button>
+
+<div id="issues-container"></div>
+
+    
+  <script src="login.js"></script>
+</body>
+</html>
