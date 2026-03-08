@@ -65,9 +65,7 @@
     </div>
   
     <div class="bg-white p-5">
-<div id="issuesContainer" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-    <div id="loadingContainer" class="mx-auto max-w-md col-span-full">
+         <div id="loadingContainer" class="mx-auto max-w-md col-span-full hidden">
       
         <span class="loading loading-bars loading-xs"></span>
 <span class="loading loading-bars loading-sm"></span>
@@ -75,6 +73,9 @@
 <span class="loading loading-bars loading-lg"></span>
 <span class="loading loading-bars loading-xl"></span>
     </div>
+<div id="issuesContainer" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+   
     
 
 </div>
@@ -98,6 +99,7 @@
 
 <script>
 const loadAllIssues=async (status='all')=>{
+     spinner(true)
     activeBTN(status)
     const res=await fetch('https://phi-lab-server.vercel.app/api/v1/lab/issues');
     const data=await res.json()
@@ -106,12 +108,13 @@ const loadAllIssues=async (status='all')=>{
 if(status!='all'){
     issues=issues.filter(issue=>issue.status===status)
 }
-
+ spinner(false)
         displayIssues(issues)
     
 }
 
 const displayIssues=(issues)=>{
+   
     const countIssues=document.getElementById('countIssues').innerText=issues.length;
 
     const issuesContainer=document.getElementById("issuesContainer");
@@ -120,7 +123,7 @@ issues.map(issue=>{
   
     const card=document.createElement("div")
     card.innerHTML=`
-    <div onclick="my_modal_3.showModal();shoDetails(${issue.id})" class="bg-white p-5 rounded-md shadow-xl ${issue.status==='open' ? 'border-t-6 border-green-700': 'border-t-6 border-[#A855F7]'}">
+    <div onclick="my_modal_3.showModal();shoDetails(${issue.id})" class="bg-white p-5 rounded-md shadow-xl ${issue.status==='open' ? 'border-t-6 border-green-700': 'border-t-6 border-[#A855F7]'} h-full">
      
 <div class="flex justify-between items-center">
 ${issue.status==='open' ?
@@ -215,8 +218,14 @@ const peram=alldata?.filter(data=>data.description.toLowerCase().includes(input)
 displayIssues(peram)
 }
 
-const spinner=()=>{
-
+const spinner=(valie)=>{
+if(valie){
+    document.getElementById("loadingContainer").classList.remove('hidden')
+    document.getElementById("issuesContainer").classList.add('hidden')
+}else{
+    document.getElementById("loadingContainer").classList.add('hidden')
+    document.getElementById("issuesContainer").classList.remove('hidden')
+}
 }
 loadAllIssues()
 </script>
