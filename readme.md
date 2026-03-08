@@ -15,4 +15,5 @@ forEach() use for get data and not give us new array
 
 4.ans=>A number of difference of traditional function and arrow function. Arrow function is shorter more then traditional function and it's update version
 
-5.literals is an important and very useful code of javaScript such as backtick(``),dolursign(${}),multilie(a/b) and so on.
+5.What are template literals?
+ans=> literals is an important and very useful code of javaScript such as backtick(``),dolursign(${}),multilie(a/b) and so on.
